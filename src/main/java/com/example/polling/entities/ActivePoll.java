@@ -6,7 +6,6 @@ import java.util.UUID;
 
 @Table("active_polls")
 public class ActivePoll {
-
     @PrimaryKey
     private UUID pollId;
 
