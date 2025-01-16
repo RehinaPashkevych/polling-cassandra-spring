@@ -18,7 +18,7 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 
 import java.util.*;
 @SpringBootApplication
-@EnableCassandraRepositories
+@EnableCassandraRepositories(basePackages = "com.example.polling.repositories")
 public class PollingApplication {
 
     @Autowired

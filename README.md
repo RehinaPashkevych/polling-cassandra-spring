@@ -167,3 +167,21 @@ CREATE TABLE poll_votes (
 ```
 
 ---
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------
+
+./mvnw clean package -DskipTests
+
+docker-compose up --build -d
+
+CREATE KEYSPACE spring_cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+

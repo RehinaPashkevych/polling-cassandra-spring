@@ -1,0 +1,79 @@
+version: '3.9'
+services:
+  cassandra-seed:
+    image: cassandra:4.0.7
+    container_name: cassandra-seed
+    networks:
+      - cassandra-network
+    ports:
+      - 9042:9042
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TestCluster
+      - CASSANDRA_NUM_TOKENS=256
+      - CASSANDRA_DC=datacenter1
+
+  cassandra-node2:
+    image: cassandra:4.0.7
+    container_name: cassandra-node2
+    networks:
+      - cassandra-network
+    environment:
+      - CASSANDRA_SEEDS=cassandra-seed
+      - CASSANDRA_CLUSTER_NAME=TestCluster
+      - CASSANDRA_DC=datacenter1
+
+  cassandra-node3:
+    image: cassandra:4.0.7
+    container_name: cassandra-node3
+    networks:
+      - cassandra-network
+    environment:
+      - CASSANDRA_SEEDS=cassandra-seed
+      - CASSANDRA_CLUSTER_NAME=TestCluster
+      - CASSANDRA_DC=datacenter1
+
+  spring-app-instance1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app-instance1
+    networks:
+      - cassandra-network
+    depends_on:
+      - cassandra-seed
+      - cassandra-node2
+      - cassandra-node3
+    stdin_open: true
+    tty: true
+
+  spring-app-instance2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app-instance2
+    networks:
+      - cassandra-network
+    depends_on:
+      - cassandra-seed
+      - cassandra-node2
+      - cassandra-node3
+    stdin_open: true
+    tty: true
+
+  spring-app-instance3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app-instance3
+    networks:
+      - cassandra-network
+    depends_on:
+      - cassandra-seed
+      - cassandra-node2
+      - cassandra-node3
+    stdin_open: true
+    tty: true
+
+networks:
+  cassandra-network:
+    driver: bridge
