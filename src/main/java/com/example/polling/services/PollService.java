@@ -5,6 +5,9 @@ import com.example.polling.entities.Poll;
 import com.example.polling.entities.PollResult;
 import com.example.polling.repositories.ActivePollRepository;
 import com.example.polling.repositories.PollRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +37,10 @@ public class PollService {
 
         // 3. Add the poll to polls table
         pollRepository.save(poll);
+    }
+
+    @Transactional
+    public List<Poll> readPolls() {
+        return this.pollRepository.findAll();
     }
 }

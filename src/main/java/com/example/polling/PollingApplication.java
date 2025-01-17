@@ -59,7 +59,8 @@ public class PollingApplication {
                 System.out.println("2. Vote");
                 System.out.println("3. Show Results");
                 System.out.println("4. Delete all data from tables");
-                System.out.println("5. Exit");
+                System.out.println("5. List all polls");
+                System.out.println("6. Exit");
 
                 int option = Integer.parseInt(scanner.nextLine());
 
@@ -68,7 +69,8 @@ public class PollingApplication {
                     case 2 -> addVote(scanner);
                     case 3 -> showResults(scanner);
                     case 4 -> deleteAllData();
-                    case 5 -> {
+                    case 5 -> printPolls();
+                    case 6 -> {
                         System.out.println("Exiting the Polling System. Goodbye!");
                         return;
                     }
@@ -147,6 +149,17 @@ public class PollingApplication {
             System.out.println("Invalid UUID format. Please enter valid UUIDs.");
         } catch (Exception e) {
             System.out.println("Error casting vote: " + e.getMessage());
+        }
+    }
+
+    private void printPolls() {
+        try {
+            List<Poll> polls = pollService.readPolls();
+            for (int i = 0; i < polls.size(); i++) {
+                System.out.println(polls.get(i).getId());
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
