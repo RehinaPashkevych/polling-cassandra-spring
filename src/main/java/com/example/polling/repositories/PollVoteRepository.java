@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PollVoteRepository extends CassandraRepository<PollVote, UUID> {
-    @Query("SELECT * FROM poll_votes WHERE pollid = ?0 AND userid = ?1 ALLOW FILTERING")
+    @Query("SELECT * FROM poll_votes WHERE pollid = ?0 AND userid = ?1")
     Optional<PollVote> findVote(UUID pollId, UUID userId);
 }
-
