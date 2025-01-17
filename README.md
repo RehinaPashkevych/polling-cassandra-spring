@@ -1,85 +1,55 @@
 # Setting Up Cassandra Cluster and Running Spring Boot Application
-
-This guide provides step-by-step instructions to set up a Cassandra cluster using Docker and run your Spring Boot application. Follow these steps carefully to configure the cluster, create a keyspace, and verify its status.
-
 ---
+<details>  
+<summary> Useful commands </summary>
 
-## Step 1: Create a Docker Network
-Create a network for Cassandra containers to communicate.
+1. **Build the application:**
+   ```bash  
+   ./mvnw clean package -DskipTests  
+   ```  
 
-```bash
-docker network create cassandra-network
-```
+2. **Start the Cassandra cluster:**
+   ```bash  
+   docker-compose up --build -d  
+   ```  
+   or
+   ```bash  
+   make up
+   ```  
 
----
+3. **Create the keyspace:**  
+   Run the following in the Cassandra cluster:
+   ```sql  
+   CREATE KEYSPACE spring_cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};  
+   ```  
+   or
+   ```bash  
+   make create-keyspace
+   ```    
 
-## Step 2: Start the Seed Node
-Start the Cassandra seed node as the primary node of the cluster.
+4. **Access the container:**
+   ```bash  
+   docker exec -it spring-app-instance1 bash  
+   ```  
 
-```bash
-docker run --rm --name cassandra-seed --network cassandra-network -d cassandra:4.0.7
-```
+   ```bash  
+   docker exec -it cassandra-seed cqlsh    
+   ```  
 
----
+5. **Run the application inside spring-app-instance:**
+    ```bash  
+       java -jar polling-0.0.1-SNAPSHOT.jar  
+    ```
 
-## Step 3: Start Additional Nodes
-Add more Cassandra nodes to the cluster, connecting them to the seed node.
+6. **Check Cluster Status:**
+    ```bash
+    docker exec -it cassandra-seed bash -c "nodetool status"
+    ```
+</details> 
 
-### Node 2:
-```bash
-docker run --rm --name cassandra-node2 --network cassandra-network -e CASSANDRA_SEEDS=cassandra-seed -d cassandra:4.0.7
-```
+<details> 
 
-### Node 3:
-```bash
-docker run --rm --name cassandra-node3 --network cassandra-network -e CASSANDRA_SEEDS=cassandra-seed -d cassandra:4.0.7
-```
-
----
-
-## Step 4: Create a Keyspace
-Create the required keyspace in the Cassandra database.
-
-```bash
-docker exec -it cassandra-seed bash -c "cqlsh -u cassandra -p cassandra -e \"CREATE KEYSPACE IF NOT EXISTS spring_cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};\""
-```
-
----
-
-## Step 5: Check Cluster Status
-Verify the health and connectivity of the Cassandra cluster.
-
-```bash
-docker exec -it cassandra-seed bash -c "nodetool status"
-```
-
----
-
-## Step 6: Cleanup
-Stop all Cassandra containers and remove the Docker network.
-
-### Stop Containers:
-```bash
-docker stop cassandra-seed cassandra-node2 cassandra-node3
-```
-
-### Remove Network:
-```bash
-docker network rm cassandra-network
-```
-
----
-
-## Step 7: Run Spring Boot Application
-Start your Spring Boot application.
-
-```bash
-./mvnw spring-boot:run
-```
-
----
-
-# Database Tables Documentation
+<summary> Database Tables Documentation </summary>
 
 This document provides an overview of the tables and their respective fields in the database related to the polling system. It outlines the structure of each table and its purpose within the system.
 
@@ -167,21 +137,4 @@ CREATE TABLE poll_votes (
 ```
 
 ---
-
-
-
-
-
-
-
-
-
-
---------------------------------------------------------
-
-./mvnw clean package -DskipTests
-
-docker-compose up --build -d
-
-CREATE KEYSPACE spring_cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
-
+</details> 
