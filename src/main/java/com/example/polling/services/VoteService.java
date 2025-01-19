@@ -1,6 +1,5 @@
 package com.example.polling.services;
 
-import com.example.polling.entities.PollResult;
 import com.example.polling.entities.PollVote;
 import com.example.polling.repositories.ActivePollRepository;
 import com.example.polling.repositories.PollResultRepository;
@@ -23,7 +22,6 @@ public class VoteService {
 
     @Transactional
     public boolean vote(UUID pollId, UUID userId, int optionId) {
-        // Step 1: Check if the poll is active
         if (!activePollRepository.existsById(pollId)) {
             throw new IllegalStateException("Poll is not active or has expired.");
         }
@@ -31,15 +29,10 @@ public class VoteService {
         if (pollVoteRepository.hasVoted(pollId, userId))
             return false;
 
-        // Step 3: Record the user's vote in the poll_votes table
-        PollVote pollVote = new PollVote(pollId, userId);
-        pollVoteRepository.save(pollVote);
-
-        // Step 4: Increment the vote counter for the selected option in poll_results
-        PollResult.PollResultKey resultKey = new PollResult.PollResultKey(pollId, optionId);
+        pollVoteRepository.saveVote(new PollVote(pollId, userId));
         pollResultRepository.incrementVoteCount(pollId, optionId);
 
-        return true; // Vote successfully recorded
+        return true;
     }
 }
 
