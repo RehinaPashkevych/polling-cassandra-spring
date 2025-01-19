@@ -9,10 +9,10 @@ import java.util.UUID;
 @Table("poll_votes")
 public class PollVote {
 
-    @PrimaryKeyColumn(type = PrimaryKeyType.PARTITIONED)
+    @PrimaryKeyColumn(name = "poll_id", type = PrimaryKeyType.PARTITIONED)
     private UUID pollId;
 
-    @PrimaryKeyColumn(type = PrimaryKeyType.CLUSTERED, ordinal = 0)
+    @PrimaryKeyColumn(name = "user_id", type = PrimaryKeyType.CLUSTERED, ordinal = 0)
     private UUID userId;
 
     // Constructors

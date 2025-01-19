@@ -11,7 +11,6 @@ import static org.springframework.data.cassandra.core.mapping.CassandraType.Name
 
 @Table("poll_results")
 public class PollResult {
-
     @PrimaryKeyClass
     public static class PollResultKey implements Serializable {
 
@@ -51,6 +50,7 @@ public class PollResult {
     private PollResultKey key;
 
     @CassandraType(type=COUNTER)
+    @Column("num_of_votes")
     private long numOfVotes;
 
     // Constructors

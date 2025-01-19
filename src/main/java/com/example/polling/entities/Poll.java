@@ -1,17 +1,23 @@
 package com.example.polling.entities;
 
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 import java.util.List;
 import java.util.UUID;
 
 @Table("polls")
 public class Poll {
-    @PrimaryKey
+    @Id
+    @PrimaryKeyColumn(name = "poll_id", type = PrimaryKeyType.PARTITIONED)
     private UUID id;
 
+    @Column("question")
     private String question;
 
+    @Column("answers")
     private List<String> answers;
 
     // Constructors
