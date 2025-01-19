@@ -10,17 +10,17 @@ import com.example.polling.repositories.PollVoteRepository;
 import com.example.polling.services.PollService;
 import com.example.polling.services.ResultService;
 import com.example.polling.services.VoteService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 import java.util.*;
+
 @SpringBootApplication
 @EnableCassandraRepositories(basePackages = "com.example.polling.repositories")
-public class PollingApplication {
-
+public class PollingApplication implements CommandLineRunner {
     @Autowired
     private PollService pollService;
 
@@ -46,8 +46,8 @@ public class PollingApplication {
         SpringApplication.run(PollingApplication.class, args);
     }
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void run(String... args) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to the Polling System!");
