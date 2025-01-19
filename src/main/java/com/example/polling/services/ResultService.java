@@ -18,13 +18,12 @@ public class ResultService {
     private PollResultRepository pollResultRepository;
 
     public List<PollResult> getResults(UUID pollId) {
-        // 1. Check if poll is still active
         if (activePollRepository.existsById(pollId)) {
-            throw new RuntimeException("Poll is still active. Final results are not available.");
+            System.out.println("Poll is still active. Results might be inaccurate.");
+            return pollResultRepository.findByKeyPollId(pollId);
         }
 
-        // 2. Get results from poll_results
-        return pollResultRepository.findByKeyPollId(pollId);
+        return pollResultRepository.findByKeyPollIdFinal(pollId);
     }
 }
 
