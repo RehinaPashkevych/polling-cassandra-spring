@@ -14,15 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PollService {
-
-    private final PollRepository pollRepository;
-    private final ActivePollRepository activePollRepository;
-
     @Autowired
-    public PollService(PollRepository pollRepository, ActivePollRepository activePollRepository) {
-        this.pollRepository = pollRepository;
-        this.activePollRepository = activePollRepository;
-    }
+    private PollRepository pollRepository;
+    @Autowired
+    private ActivePollRepository activePollRepository;
 
     @Transactional
     public void createPoll(Poll poll, int durationSeconds) {

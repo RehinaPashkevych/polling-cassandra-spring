@@ -3,6 +3,8 @@ package com.example.polling.services;
 import com.example.polling.entities.PollResult;
 import com.example.polling.repositories.ActivePollRepository;
 import com.example.polling.repositories.PollResultRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,14 +12,10 @@ import java.util.UUID;
 
 @Service
 public class ResultService {
-
-    private final ActivePollRepository activePollRepository;
-    private final PollResultRepository pollResultRepository;
-
-    public ResultService(ActivePollRepository activePollRepository, PollResultRepository pollResultRepository) {
-        this.activePollRepository = activePollRepository;
-        this.pollResultRepository = pollResultRepository;
-    }
+    @Autowired
+    private ActivePollRepository activePollRepository;
+    @Autowired
+    private PollResultRepository pollResultRepository;
 
     public List<PollResult> getResults(UUID pollId) {
         // 1. Check if poll is still active
