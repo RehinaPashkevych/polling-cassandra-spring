@@ -28,10 +28,8 @@ public class VoteService {
             throw new IllegalStateException("Poll is not active or has expired.");
         }
 
-        // Step 2: Check if the user has already voted in this poll
-        if (pollVoteRepository.findVote(pollId, userId).isPresent()) {
-            return false; // User has already voted
-        }
+        if (pollVoteRepository.hasVoted(pollId, userId))
+            return false;
 
         // Step 3: Record the user's vote in the poll_votes table
         PollVote pollVote = new PollVote(pollId, userId);
