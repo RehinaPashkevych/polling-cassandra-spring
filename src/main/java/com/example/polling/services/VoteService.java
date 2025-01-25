@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 public class VoteService {
     @Autowired
@@ -21,19 +19,17 @@ public class VoteService {
     private ActivePollRepository activePollRepository;
 
     @Transactional
-    public boolean vote(UUID pollId, UUID userId, int optionId) {
-        if (!activePollRepository.existsById(pollId)) {
+    public boolean vote(PollVote vote) {
+        if (!activePollRepository.existsById(vote.getPollId())) {
             throw new IllegalStateException("Poll is not active or has expired.");
         }
 
-        if (pollVoteRepository.hasVoted(pollId, userId))
+        if (pollVoteRepository.hasVoted(vote.getPollId(), vote.getUserId()))
             return false;
 
-        pollVoteRepository.saveVote(new PollVote(pollId, userId));
-        pollResultRepository.incrementVoteCount(pollId, optionId);
+        pollVoteRepository.saveVote(vote);
+        pollResultRepository.incrementVoteCount(vote.getPollId(), vote.getOption());
 
         return true;
     }
 }
-
-

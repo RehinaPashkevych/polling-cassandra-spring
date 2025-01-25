@@ -12,18 +12,29 @@ import java.util.UUID;
 
 @Service
 public class ResultService {
+    public class Results {
+        boolean active;
+        List<PollResult> results;
+
+        public Results(boolean active, List<PollResult> results) {
+            this.active = active;
+            this.results = results;
+        }
+
+        public boolean isActive() { return this.active; }
+        public List<PollResult> getResults() { return this.results; }
+    }
+
     @Autowired
     private ActivePollRepository activePollRepository;
     @Autowired
     private PollResultRepository pollResultRepository;
 
-    public List<PollResult> getResults(UUID pollId) {
-        if (activePollRepository.existsById(pollId)) {
-            System.out.println("Poll is still active. Results might be inaccurate.");
-            return pollResultRepository.findByKeyPollId(pollId);
-        }
+    public Results getResults(UUID pollId) {
+        if (activePollRepository.existsById(pollId))
+            return new Results(true, pollResultRepository.findByKeyPollId(pollId));
 
-        return pollResultRepository.findByKeyPollIdFinal(pollId);
+        return new Results(false, pollResultRepository.findByKeyPollIdFinal(pollId));
     }
 }
 
