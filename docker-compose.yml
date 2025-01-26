@@ -11,7 +11,7 @@ services:
       interval: 15s
       timeout: 10s
       retries: 20
-      test: ["CMD", "cqlsh", "-e describe keyspaces"]
+      test: ["CMD", "cqlsh", "cassandra-seed", "-e", "describe keyspaces"]
     environment:
       - CASSANDRA_CLUSTER_NAME=TestCluster
       - CASSANDRA_NUM_TOKENS=256
@@ -35,12 +35,13 @@ services:
 
   cassandra-node:
     image: cassandra:4.0.7
-    scale: 2
+    deploy:
+      replicas: 2
     healthcheck:
       interval: 15s
       timeout: 10s
       retries: 50
-      test: ["CMD", "cqlsh", "-e describe keyspaces"]
+      test: ["CMD", "cqlsh", "cassandra-seed", "-e", "describe keyspaces"]
     depends_on:
       - cassandra-seed
     networks:
@@ -54,7 +55,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    scale: 3
+    deploy:
+      replicas: 3
     networks:
       - cassandra-network
     depends_on:
@@ -64,6 +66,20 @@ services:
         condition: service_healthy
     stdin_open: true
     tty: true
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        # Generate SSH keys only if they do not exist
+        ssh-keygen -t rsa -b 4096 -C "your_email@example.com"  "" &&
+        # Copy the SSH key to other containers (you can do this with sshpass for passwordless login)
+        sshpass -p 'password' ssh-copy-id  dockeruser@polling-spring-app-instance-1 &&
+        sshpass -p 'password' ssh-copy-id  dockeruser@polling-spring-app-instance-2 &&
+        sshpass -p 'password' ssh-copy-id  dockeruser@polling-spring-app-instance-3
+      
+        # Start SSH service and application
+        service ssh start &&
+        sh
 
 networks:
   cassandra-network:
