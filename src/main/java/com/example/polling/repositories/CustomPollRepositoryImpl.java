@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.CassandraTemplate;
+import org.springframework.data.cassandra.core.InsertOptions;
 import org.springframework.data.cassandra.core.cql.QueryOptions;
 import org.springframework.data.cassandra.core.query.Query;
 
@@ -18,5 +19,14 @@ public class CustomPollRepositoryImpl implements CustomPollRepository {
         Query query = Query.query().queryOptions(
             QueryOptions.builder().consistencyLevel(ConsistencyLevel.ONE).build());
         return this.cassandraTemplate.select(query, Poll.class);
+    }
+
+    public void insertPoll(Poll poll) {
+        this.cassandraTemplate.insert(
+            poll,
+            InsertOptions.builder()
+                .consistencyLevel(ConsistencyLevel.QUORUM)
+                .build()
+        );
     }
 }

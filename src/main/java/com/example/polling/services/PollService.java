@@ -21,7 +21,7 @@ public class PollService {
     @Transactional
     public void createPoll(Poll poll) {
         this.activePollRepository.insertPollWithTTL(poll.getId(), poll.getTTL());
-        this.pollRepository.save(poll);
+        this.pollRepository.insertPoll(poll);
     }
 
     @Transactional

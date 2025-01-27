@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CustomPollRepository {
     List<Poll> findAll();
+    void insertPoll(Poll poll);
 }
